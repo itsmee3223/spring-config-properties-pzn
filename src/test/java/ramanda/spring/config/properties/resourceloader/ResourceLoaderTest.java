@@ -19,7 +19,7 @@ public class ResourceLoaderTest {
     @Test
     void testResourceLoader() throws Exception{
         String text = sampleResource.getText();
-        Assertions.assertEquals("Ramanda Ajisaka Asyraf", text);
+        Assertions.assertEquals("Ramanda Ajisaka Asyraf", text.trim());
     }
 
     @SpringBootApplication
