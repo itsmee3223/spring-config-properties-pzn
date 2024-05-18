@@ -30,6 +30,9 @@ public class ResourceLoaderTest {
             private ResourceLoader resourceLoader;
 
             public String getText() throws Exception{
+//                prefix diawal menentukan resource apa yang ingin diload
+//                Resource resource = resourceLoader.getResource("file:///Users/Ramanda/file.properties");
+//                Resource resource = resourceLoader.getResource("https://www.sample.com/file.properties");
                 Resource resource = resourceLoader.getResource("classpath:/text/resource.txt");
 
                 try(var inputStream = resource.getInputStream()){
