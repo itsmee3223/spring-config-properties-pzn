@@ -7,15 +7,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(classes = ProfileTest.TestApplication.class)
+@ActiveProfiles({"production"})
 public class ProfileTest {
     @Autowired
     private TestApplication.SayHello sayHello;
 
     @Test
     void testProfile(){
-        Assertions.assertEquals("Hello Ramanda from Local", sayHello.say("Ramanda"));
+        Assertions.assertEquals("Hello Ramanda from Production", sayHello.say("Ramanda"));
     }
 
 
