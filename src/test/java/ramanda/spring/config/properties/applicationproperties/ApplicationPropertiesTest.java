@@ -6,15 +6,26 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.convert.ConversionService;
 import ramanda.spring.config.properties.ApplicationProperties;
+import ramanda.spring.config.properties.converter.StringToDateConverter;
 
+import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.Date;
 
 @SpringBootTest(classes = ApplicationPropertiesTest.TestApplication.class)
 public class ApplicationPropertiesTest {
     @Autowired
     private ApplicationProperties properties;
+
+    @Autowired
+    private ConversionService conversionService;
 
     @Test
     void testApplicationProperties(){
@@ -52,11 +63,35 @@ public class ApplicationPropertiesTest {
         Assertions.assertEquals("Finance Role", properties.getRoles().get("finance").getName());
     }
 
+    @Test
+    void testDuration(){
+        Assertions.assertEquals(Duration.ofSeconds(10), properties.getDefaultTimeout());
+    }
+
+    @Test
+    void testCustomConverter(){
+        Date expireDate = properties.getExpireDate();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Assertions.assertEquals("2024-12-30", dateFormat.format(expireDate));
+    }
+
+    @Test
+    void testConversionService(){
+        Assertions.assertTrue(conversionService.canConvert(String.class, Duration.class));
+        Assertions.assertEquals(Duration.ofSeconds(10), conversionService.convert("10s", Duration.class));
+    }
+
     @SpringBootApplication
     @EnableConfigurationProperties({
             ApplicationProperties.class
     })
+    @Import(StringToDateConverter.class)
     public static class TestApplication{
-
+        @Bean
+        public ConversionService conversionService(StringToDateConverter stringToDateConverter){
+            ApplicationConversionService conversionService = new ApplicationConversionService();
+            conversionService.addConverter(stringToDateConverter);
+            return conversionService;
+        }
     }
 }
