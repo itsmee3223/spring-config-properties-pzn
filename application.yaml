@@ -1,0 +1,4 @@
+application:
+  name: Ramanda
+  version: 3
+  production-mode: true
